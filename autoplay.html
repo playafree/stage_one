@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background: #262626;
+        }
+        li{
+            list-style:none;
+        }
+
+        img{
+            vertical-align: bottom;
+        }
+
+        .banner{
+            width: 1200px;
+            margin:100px auto;
+             border:1px solid white; 
+            position: relative;
+        }
+
+        .banner .banner_imgs{
+            position: relative;
+            height: 500px;
+        }
+
+        .banner .banner_imgs ul li {
+            position: absolute;
+            left: 200px;
+            top: 0;
+        }
+
+        .banner .banner_imgs ul li img{
+            width: 100%;
+        }
+
+        .banner .arrow_box{
+            position: absolute;
+            top: 50%;
+            z-index: 1000;
+            width: 100%;
+            display: none;
+        }
+
+        .banner .arrow_box .arrow_left, .banner .arrow_box .arrow_right {
+            width: 76px;
+            height: 112px;
+            position: absolute;
+            z-index: 99;
+            cursor: pointer;
+        }
+        /*箭头的图片*/
+        .banner .arrow_box .arrow_left {
+            left: 0;
+            background: url(images/arrow_left.png) no-repeat;
+        }
+
+        .banner .arrow_box .arrow_right {
+            right: 0;
+            background: url(images/arrow_right.png) no-repeat;
+        }
+        /* #one{
+            width: 400px;
+            top: 20px;
+            left: 50px;
+            opacity: 0.2;
+            z-index:2;
+        }
+        #two{
+            width: 600px;
+            top: 70px;
+            left: 0;
+            opacity: 0.8;
+            z-index:3;
+        }
+        #three{
+            width: 800px;
+            top: 100px;
+            left: 200px;
+            opacity: 1;
+            z-index:4;
+        }
+        #four{
+            width: 600px;
+            top: 70px;
+            left: 600px;
+            opacity: 0.8;
+            z-index:3;
+        }
+        #five{
+            width: 400px;
+            top: 20px;
+            left: 750px;
+            opacity: 0.2;
+            z-index:2;
+        } */
+
+        .banner .circle{
+            position: absolute;
+            left: 50%;
+            bottom: -88px;
+            height: 14px;
+            transform: translateX(-50%);
+            z-index:10;
+        }
+        .banner .circle li{
+            width: 14px;
+            height: 14px;
+            float: left;
+            border-radius: 50%;
+            background: white;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .banner .circle li:last-child{
+            margin-right: 0;
+        }
+        .banner .circle li.current{
+            background:#e1251b;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <!-- 轮播图片 -->
+        <div class="banner_imgs">
+            <ul>
+                <li id="one"><a href="#"><img src="images/banner_img01.png"/></a></li>
+                <li id="two"><a href="#"><img src="images/banner_img02.png"/></a></li>
+                <li id="three"><a href="#"><img src="images/banner_img03.png"/></a></li>
+                <li id="four"><a href="#"><img src="images/banner_img04.png"/></a></li>
+                <li id="five"><a href="#"><img src="images/banner_img05.png"/></a></li>
+            </ul>
+        </div>
+
+        <!-- 左右箭头 -->
+        <div class="arrow_box">
+            <div class="arrow_left"></div>
+            <div class="arrow_right"></div>
+        </div>
+
+        <!-- 指示器 小圆点 -->
+        <div class="circle">
+            <ol>
+                <li></li>
+                <li></li>
+                <li class="current"></li>
+                <li></li>
+                <li></li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // 功能1: 淡入淡出箭头
+        $(".banner").hover(function(){
+            // 鼠标移上.banner的时候,淡入.arrow_box箭头层
+            $(".arrow_box").stop().fadeIn();
+            // 鼠标移上,清除定时器,停止自动轮播
+            window.clearInterval( timer );
+            timer = null;
+
+        },function(){
+            // 鼠标移出.banner的时候,淡出.arrow_box箭头层
+            $(".arrow_box").stop().fadeOut();
+            // 鼠标移出,重新定时器,继续自动轮播
+            if( timer == null ){
+            	timer = setInterval(function(){
+		        	$(".arrow_right").click();
+		        },1500);
+            }
+        })
+
+        // 功能2: 一打开页面动画摆好图片位置
+        // 其实config变量保存的就是一个配置单 规定了每个li的宽度大小位置层级透明度
+        var config = [
+            {
+                "width": 400,
+                "top": 20,
+                "left": 50,
+                "opacity": 0.2,
+                "zIndex": 2
+            },
+            {
+                "width": 600,
+                "top": 70,
+                "left": 0,
+                "opacity": 0.8,
+                "zIndex": 3
+            },
+            {
+                "width": 800,
+                "top": 100,
+                "left": 200,
+                "opacity": 1,
+                "zIndex": 4
+            },
+            {
+                "width": 600,
+                "top": 70,
+                "left": 600,
+                "opacity": 0.8,
+                "zIndex": 3
+            },
+            {
+                "width": 400,
+                "top": 20,
+                "left": 750,
+                "opacity": 0.2,
+                "zIndex": 2
+            }
+        ];
+
+
+
+
+        // 根据配置单中的数据 逐个设置给每一个li
+        function init( data ){
+            $.each(data,function(index,item){
+                $(".banner_imgs ul li").eq(index).stop().animate( item );
+            })
+        }
+
+        init( config );
+
+
+        // 定义一个变量,保存当前指示器高亮的索引号
+        var circleIndex = 2;
+        // 功能3: 点击右箭头 旋转 图片
+        $(".arrow_right").click(function(){
+            // 把config数组中的第一个元素放到数组中的最后一个位置
+            config.push( config.shift() );
+            // 重新根据配置,设置每个li
+            init( config );
+
+            // 修改指示器高亮
+            circleIndex++;
+            // 判断边界值
+            if( circleIndex == $(".circle li").length ){
+                circleIndex = 0;
+            }
+            // 高亮当前li
+            $(".circle li").eq( circleIndex ).addClass("current").siblings("li").removeClass("current");
+        })
+
+        // 功能4: 点击左箭头 旋转 图片
+        $(".arrow_left").click(function(){
+            // 把config数组中的最后一个元素放到数组中的第一个位置
+            config.unshift( config.pop() );
+            // 重新根据配置,设置每个li
+            init( config );
+
+            // 修改指示器高亮
+            circleIndex--;
+            // 判断边界值
+            if( circleIndex == -1 ){
+                circleIndex = $(".circle li").length - 1;
+            }
+            // 高亮当前li
+            $(".circle li").eq( circleIndex ).addClass("current").siblings("li").removeClass("current");
+        })
+
+        // 功能5: 点击某个小圆点,旋转到对应的图片
+
+        // 准备配置数据
+        var config0=[{"width":600,"top":70,"left":600,"opacity":0.8,"zIndex":3},{"width":400,"top":20,"left":750,"opacity":0.2,"zIndex":2},{"width":400,"top":20,"left":50,"opacity":0.2,"zIndex":2},{"width":600,"top":70,"left":0,"opacity":0.8,"zIndex":3},{"width":800,"top":100,"left":200,"opacity":1,"zIndex":4}];
+
+        var config1=[{"width":400,"top":20,"left":750,"opacity":0.2,"zIndex":2},{"width":400,"top":20,"left":50,"opacity":0.2,"zIndex":2},{"width":600,"top":70,"left":0,"opacity":0.8,"zIndex":3},{"width":800,"top":100,"left":200,"opacity":1,"zIndex":4},{"width":600,"top":70,"left":600,"opacity":0.8,"zIndex":3}];
+
+        var config2=[{"width":400,"top":20,"left":50,"opacity":0.2,"zIndex":2},{"width":600,"top":70,"left":0,"opacity":0.8,"zIndex":3},{"width":800,"top":100,"left":200,"opacity":1,"zIndex":4},{"width":600,"top":70,"left":600,"opacity":0.8,"zIndex":3},{"width":400,"top":20,"left":750,"opacity":0.2,"zIndex":2}];
+
+        var config3=[{"width":600,"top":70,"left":0,"opacity":0.8,"zIndex":3},{"width":800,"top":100,"left":200,"opacity":1,"zIndex":4},{"width":600,"top":70,"left":600,"opacity":0.8,"zIndex":3},{"width":400,"top":20,"left":750,"opacity":0.2,"zIndex":2},{"width":400,"top":20,"left":50,"opacity":0.2,"zIndex":2}];
+
+        var config4=[{"width":800,"top":100,"left":200,"opacity":1,"zIndex":4},{"width":600,"top":70,"left":600,"opacity":0.8,"zIndex":3},{"width":400,"top":20,"left":750,"opacity":0.2,"zIndex":2},{"width":400,"top":20,"left":50,"opacity":0.2,"zIndex":2},{"width":600,"top":70,"left":0,"opacity":0.8,"zIndex":3}];
+
+        var configs = [config0,config1,config2,config3,config4];
+
+        // 绑定事件
+        $(".circle li").click(function(){
+        	// 高亮被点击项
+            $(this).addClass("current").siblings("li").removeClass("current");
+            // 根据索引号获取相应的配置项
+            init( configs[ $(this).index() ] );
+            // 设置当前高亮的索引号
+            circleIndex = $(this).index();
+            // 设置配置项的值
+            config = configs[ $(this).index() ].concat();
+        })
+
+        var timer = setInterval(function(){
+        	$(".arrow_right").click();
+        },1500);
+    </script>
+</body>
+</html>
